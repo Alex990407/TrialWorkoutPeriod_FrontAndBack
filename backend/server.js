@@ -1,10 +1,10 @@
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
 const trialRoutes = require("./routes/trialRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -25,6 +25,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", () => console.log("✅ Connected to MongoDB"));
 
 //Routes
+app.use("/api", authRoutes);
 app.use("/api", trialRoutes);
 
 // Start Server

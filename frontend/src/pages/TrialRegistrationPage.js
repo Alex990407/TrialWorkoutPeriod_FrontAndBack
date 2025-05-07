@@ -133,6 +133,10 @@ function TrialRegistrationPage() {
               border: "none",
             }}
           />
+          <p style={{ fontSize: "0.9rem", margin: "10px 0", color: "#ccc" }}>
+            Bitte geben Sie das heutige Datum ein. Ab dem Tag Ihres ersten
+            Trainings beginnt Ihre 14-tägige Probezeit!
+          </p>
           <input
             type="date"
             name="startDate"

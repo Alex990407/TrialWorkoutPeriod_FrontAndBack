@@ -4,6 +4,7 @@ const TrialUser = require("../models/TrialUser");
 const calculateEndDate = require("../utils/calculateEndDate");
 const validator = require("validator");
 const nodemailer = require("nodemailer");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -49,7 +50,43 @@ router.post("/trial", async (req, res) => {
       from: `"Kurze Rippe Boxstudio" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Dein Probetraining im "Kurze Rippe" Boxstudio',
-      text: `Hallo ${firstName},\n\nVielen Dank für deine Anmeldung zum Probetraining!\nDein Probetraining endet am ${endDate}.\n\nWir freuen uns auf dich!`,
+      text: `Hallo ${firstName},
+
+Vielen Dank für deine Anmeldung zum Probetraining!
+Dein Probetraining endet am ${endDate}.
+
+Hier ist unser aktueller Trainingsplan:
+
+📅 Montag:
+  - 17:00 - 18:30: Boxtraining (Trainer: Marc)
+  - 18:30 - 20:00: Boxtraining (Trainer: Marc)
+  - 20:00 - 21:30: Boxtraining (Trainer: Marc)
+
+📅 Dienstag:
+  - 15:30 - 17:00: Boxtraining (Trainer: Rene)
+  - 17:00 - 18:00: Kindertraining (Trainer: Rene)
+  - 18:00 - 19:30: Boxtraining (Trainer: Rene)
+  - 20:00 - 21:30: Boxtraining (Trainer: Rene)
+
+📅 Mittwoch:
+  - 15:00 - 16:30: Boxtraining (Trainer: Sergej)
+  - 17:00 - 18:30: Boxtraining (Trainer: Sergej)
+  - 18:30 - 20:00: Boxtraining (Trainer: Sergej)
+
+📅 Donnerstag:
+  - 18:00 - 19:30: Boxtraining (Trainer: Alex)
+  - 19:30 - 21:00: Boxtraining (Trainer: Alex)
+
+📅 Freitag:
+  - 16:30 - 18:00: Boxtraining (Trainer: Eike)
+  - 18:00 - 19:30: Sparring (Trainer: Eike)
+
+📅 Samstag:
+  - 15:00 - 16:30: Boxtraining (Trainer: Sergej)
+
+Für weitere Informationen besuche bitte unsere Website: https://www.kurze-rippe.de/
+
+Wir freuen uns auf dich!`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -67,7 +104,7 @@ router.post("/trial", async (req, res) => {
   }
 });
 
-router.get("/trial", async (req, res) => {
+router.get("/trial", authMiddleware, async (req, res) => {
   try {
     const users = await TrialUser.find({});
     res.status(200).json(users);

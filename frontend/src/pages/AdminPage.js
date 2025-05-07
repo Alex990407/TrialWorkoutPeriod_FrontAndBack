@@ -7,11 +7,31 @@ function AdminPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
+  //____________________________________
+
   useEffect(() => {
-    axios.get("/api/trial").then((response) => {
-      setUsers(response.data);
-    });
-  }, []);
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      navigate("/admin-login");
+      return;
+    }
+
+    axios
+      .get("/api/trial", { headers: { Authorization: token } })
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          navigate("/admin-login");
+        }
+        if (error.response && error.response.status === 403) {
+          navigate("/admin-login");
+        }
+      });
+  }, [navigate]);
+
+  //____________________________________
 
   const filteredUsers = [...users]
     .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
@@ -142,8 +162,14 @@ function AdminPage() {
                   {user.firstName} {user.lastName}
                 </td>
                 <td style={{ padding: "10px" }}>{user.email}</td>
-                <td style={{ padding: "10px" }}>{user.startDate}</td>
-                <td style={{ padding: "10px" }}>{user.endDate}</td>
+                {/* <td style={{ padding: "10px" }}>{user.startDate}</td>
+                <td style={{ padding: "10px" }}>{user.endDate}</td> */}
+                <td style={{ padding: "10px" }}>
+                  {new Date(user.startDate).toLocaleDateString("de-DE")}
+                </td>
+                <td style={{ padding: "10px" }}>
+                  {new Date(user.endDate).toLocaleDateString("de-DE")}
+                </td>
                 <td
                   style={{
                     padding: "10px",

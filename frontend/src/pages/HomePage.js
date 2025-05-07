@@ -56,7 +56,7 @@ function HomePage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Willkommen zu Kurze Rippe 🥊
+          Willkommen in der Kurzen Rippe 🥊
         </motion.h1>
 
         <motion.img
