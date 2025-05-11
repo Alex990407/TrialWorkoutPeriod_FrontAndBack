@@ -1,25 +1,20 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useAdminLogin from "../hooks/useAdminLogin";
 
 function AdminLoginPage() {
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
+  const { loginAdmin, loading, errorMessage } = useAdminLogin();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", { password });
-      localStorage.setItem("adminToken", response.data.token);
+      const data = await loginAdmin(password);
+      localStorage.setItem("adminToken", data.token);
       navigate("/admin");
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage("Serverfehler");
-      }
-    }
+    } catch (err) {}
   };
 
   return (
@@ -69,6 +64,7 @@ function AdminLoginPage() {
           />
           <button
             type="submit"
+            disabled={loading}
             style={{
               width: "100%",
               padding: "12px",
@@ -80,10 +76,10 @@ function AdminLoginPage() {
               fontSize: "1rem",
             }}
           >
-            Login
+            {loading ? "Einloggen..." : "Login"}
           </button>
         </form>
-        {message && (
+        {errorMessage && (
           <p
             style={{
               marginTop: "15px",
@@ -91,7 +87,7 @@ function AdminLoginPage() {
               textAlign: "center",
             }}
           >
-            {message}
+            {errorMessage}
           </p>
         )}
       </div>

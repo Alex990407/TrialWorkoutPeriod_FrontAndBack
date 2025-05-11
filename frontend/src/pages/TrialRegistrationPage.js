@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import backgroundImage from "../assets/boxing_Background.jpg.webp";
+import useRegisterTrialUser from "../hooks/useRegisterTrialUser";
 
 function TrialRegistrationPage() {
   const [formData, setFormData] = useState({
@@ -12,8 +13,6 @@ function TrialRegistrationPage() {
     startDate: "",
   });
 
-  const [message, setMessage] = useState("");
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,22 +20,15 @@ function TrialRegistrationPage() {
     });
   };
 
+  const { registerUser, loading, error, successMessage } =
+    useRegisterTrialUser();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/trial", formData);
-
-      setMessage(response.data.message || "Danke für Registrierung!");
+      await registerUser(formData);
       setFormData({ firstName: "", lastName: "", email: "", startDate: "" });
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setMessage(
-          error.response.data.message || "Fehler bei der Registrierung."
-        );
-      } else {
-        setMessage("Server Error.");
-      }
-    }
+    } catch (err) {}
   };
 
   const navigate = useNavigate();
@@ -186,7 +178,13 @@ function TrialRegistrationPage() {
           ⬅️ Zurück zur Startseite
         </button>
 
-        {message && <p style={{ marginTop: "20px" }}>{message}</p>}
+        {loading && <p style={{ marginTop: "20px", color: "#ccc" }}>Lade...</p>}
+        {error && <p style={{ marginTop: "20px", color: "red" }}>{error}</p>}
+        {successMessage && (
+          <p style={{ marginTop: "20px", color: "lightgreen" }}>
+            {successMessage}
+          </p>
+        )}
       </motion.div>
     </div>
   );

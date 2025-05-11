@@ -1,37 +1,12 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useFetchTrialUsers from "../hooks/useFetchTrialUsers";
 
 function AdminPage() {
-  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  //____________________________________
-
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      navigate("/admin-login");
-      return;
-    }
-
-    axios
-      .get("/api/trial", { headers: { Authorization: token } })
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          navigate("/admin-login");
-        }
-        if (error.response && error.response.status === 403) {
-          navigate("/admin-login");
-        }
-      });
-  }, [navigate]);
-
-  //____________________________________
+  const { users, loading } = useFetchTrialUsers(navigate);
 
   const filteredUsers = [...users]
     .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
@@ -102,101 +77,118 @@ function AdminPage() {
         </button>
       </div>
 
-      <p>
-        Gesamt: <strong>{filteredUsers.length}</strong> Nutzer
-      </p>
+      {loading ? (
+        <p>Lade Nutzer...</p>
+      ) : (
+        <>
+          <p>
+            Gesamt: <strong>{filteredUsers.length}</strong> Nutzer
+          </p>
 
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          padding: "20px",
-          marginTop: "20px",
-          overflowX: "auto",
-        }}
-      >
-        <table
-          style={{
-            width: "100%",
-            minWidth: "600px",
-            borderCollapse: "collapse",
-          }}
-        >
-          <thead>
-            <tr>
-              <th style={{ borderBottom: "1px solid #ccc", padding: "10px" }}>
-                Name
-              </th>
-              <th style={{ borderBottom: "1px solid #ccc", padding: "10px" }}>
-                E-Mail
-              </th>
-              <th style={{ borderBottom: "1px solid #ccc", padding: "10px" }}>
-                Startdatum
-              </th>
-              <th style={{ borderBottom: "1px solid #ccc", padding: "10px" }}>
-                Enddatum
-              </th>
-              <th style={{ borderBottom: "1px solid #ccc", padding: "10px" }}>
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user, idx) => (
-              <tr
-                key={idx}
-                style={{
-                  backgroundColor: idx % 2 === 0 ? "#f9f9f9" : "white",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#e3f2fd")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                    idx % 2 === 0 ? "#f9f9f9" : "white")
-                }
-              >
-                <td style={{ padding: "10px" }}>
-                  {user.firstName} {user.lastName}
-                </td>
-                <td style={{ padding: "10px" }}>{user.email}</td>
-                {/* <td style={{ padding: "10px" }}>{user.startDate}</td>
-                <td style={{ padding: "10px" }}>{user.endDate}</td> */}
-                <td style={{ padding: "10px" }}>
-                  {new Date(user.startDate).toLocaleDateString("de-DE")}
-                </td>
-                <td style={{ padding: "10px" }}>
-                  {new Date(user.endDate).toLocaleDateString("de-DE")}
-                </td>
-                <td
-                  style={{
-                    padding: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <span
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "10px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              padding: "20px",
+              marginTop: "20px",
+              overflowX: "auto",
+            }}
+          >
+            <table
+              style={{
+                width: "100%",
+                minWidth: "600px",
+                borderCollapse: "collapse",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th
+                    style={{ borderBottom: "1px solid #ccc", padding: "10px" }}
+                  >
+                    Name
+                  </th>
+                  <th
+                    style={{ borderBottom: "1px solid #ccc", padding: "10px" }}
+                  >
+                    E-Mail
+                  </th>
+                  <th
+                    style={{ borderBottom: "1px solid #ccc", padding: "10px" }}
+                  >
+                    Startdatum
+                  </th>
+                  <th
+                    style={{ borderBottom: "1px solid #ccc", padding: "10px" }}
+                  >
+                    Enddatum
+                  </th>
+                  <th
+                    style={{ borderBottom: "1px solid #ccc", padding: "10px" }}
+                  >
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user, idx) => (
+                  <tr
+                    key={idx}
                     style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      backgroundColor:
-                        new Date(user.endDate) >= new Date() ? "green" : "red",
-                      display: "inline-block",
-                      marginRight: "8px",
+                      backgroundColor: idx % 2 === 0 ? "#f9f9f9" : "white",
+                      cursor: "pointer",
                     }}
-                  ></span>
-                  {new Date(user.endDate) >= new Date()
-                    ? "Aktiv"
-                    : "Abgelaufen"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#e3f2fd")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor =
+                        idx % 2 === 0 ? "#f9f9f9" : "white")
+                    }
+                  >
+                    <td style={{ padding: "10px" }}>
+                      {user.firstName} {user.lastName}
+                    </td>
+                    <td style={{ padding: "10px" }}>{user.email}</td>
+
+                    <td style={{ padding: "10px" }}>
+                      {new Date(user.startDate).toLocaleDateString("de-DE")}
+                    </td>
+                    <td style={{ padding: "10px" }}>
+                      {new Date(user.endDate).toLocaleDateString("de-DE")}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: "10px",
+                          height: "10px",
+                          borderRadius: "50%",
+                          backgroundColor:
+                            new Date(user.endDate) >= new Date()
+                              ? "green"
+                              : "red",
+                          display: "inline-block",
+                          marginRight: "8px",
+                        }}
+                      ></span>
+                      {new Date(user.endDate) >= new Date()
+                        ? "Aktiv"
+                        : "Abgelaufen"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 }
