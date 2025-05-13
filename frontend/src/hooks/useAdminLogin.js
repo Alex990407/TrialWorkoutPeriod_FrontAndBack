@@ -9,7 +9,9 @@ export default function useAdminLogin() {
     setLoading(true);
     setErrorMessage("");
     try {
-      const response = await axios.post("/api/login", { password });
+      const response = await axios.post("134.122.78.151:5050/api/login", {
+        password,
+      });
       return response.data;
     } catch (err) {
       const msg = err.response?.data?.message || "Serverfehler";
