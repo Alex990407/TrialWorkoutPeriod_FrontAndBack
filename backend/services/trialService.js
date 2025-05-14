@@ -1,15 +1,9 @@
 const TrialUser = require("../models/TrialUser");
 const calculateEndDate = require("../utils/calculateEndDate");
 const validator = require("validator");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function registerUser({ firstName, lastName, email, startDate }) {
   if (!firstName || !lastName || !email || !startDate) {
@@ -87,7 +81,7 @@ Wir freuen uns auf dich!`,
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await resend.emails.send(mailOptions);
   } catch (err) {
     console.error("Fehler beim Senden der E-Mail:", err);
   }
