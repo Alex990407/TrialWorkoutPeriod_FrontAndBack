@@ -38,7 +38,8 @@ async function registerUser({ firstName, lastName, email, startDate }) {
   await newUser.save();
 
   const mailOptions = {
-    from: `"Kurze Rippe Boxstudio" <${process.env.EMAIL_USER}>`,
+    // from: `"Kurze Rippe Boxstudio" <${process.env.EMAIL_USER}>`,
+    from: "Kurze Rippe Boxstudio <onboarding@resend.dev>",
     to: email,
     subject: 'Dein Probetraining im "Kurze Rippe" Boxstudio',
     text: `Hallo ${firstName},
@@ -81,9 +82,10 @@ Wir freuen uns auf dich!`,
   };
 
   try {
-    await resend.emails.send(mailOptions);
+    const result = await resend.emails.send(mailOptions);
+    console.log("Resend Mail ID:", result.id);
   } catch (err) {
-    console.error("Fehler beim Senden der E-Mail:", err);
+    console.error("E-Mail konnte nicht gesendet werden:", err?.message || err);
   }
 
   return "Erfolgreich registriert!";
