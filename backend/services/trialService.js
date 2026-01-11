@@ -39,7 +39,7 @@ async function registerUser({ firstName, lastName, email, startDate }) {
 
   const mailOptions = {
     // from: `"Kurze Rippe Boxstudio" <${process.env.EMAIL_USER}>`,
-//    from: "Kurze Rippe Boxstudio <onboarding@resend.dev>",
+    //    from: "Kurze Rippe Boxstudio <onboarding@resend.dev>",
     from: "Kurze Rippe Boxstudio <noreply@updates.trial-training-kurze-rippe.online>",
     to: email,
     subject: 'Dein Probetraining im "Kurze Rippe" Boxstudio',
@@ -53,7 +53,7 @@ Hier ist unser aktueller Trainingsplan:
 📅 Montag:
   - 17:00 - 18:30: Boxtraining (Trainer: Marc)
   - 18:30 - 20:00: Boxtraining (Trainer: Marc)
-  - 20:00 - 21:30: Boxtraining (Trainer: Marc)
+  - 20:00 - 21:30: Boxtraining (Trainer: Sebastian)
 
 📅 Dienstag:
   - 15:30 - 17:00: Boxtraining (Trainer: Rene)
@@ -62,8 +62,8 @@ Hier ist unser aktueller Trainingsplan:
   - 20:00 - 21:30: Boxtraining (Trainer: Rene)
 
 📅 Mittwoch:
-  - 15:30 - 17:00: Boxtraining / Zirkel (Trainer: Martin)
-  - 17:00 - 18:30: Boxtraining / Zirkel (Trainer: Martin)
+  - 15:30 - 17:00: Boxtraining (Trainer: Sebastian)
+  - 17:00 - 18:30: Boxtraining (Trainer: Sebastian)
   - 18:30 - 20:00: Boxtraining (Trainer: Yack)
   - 20:00 - 21:30: Boxtraining (Trainer: Yack)
 
@@ -76,8 +76,9 @@ Hier ist unser aktueller Trainingsplan:
   - 18:00 - 19:30: Sparring (Trainer: Eike)
 
 📅 Samstag:
-  - 13:00 - 14:30: fortgeschritten (Trainer: Eike)
-  - 15:00 - 16:30: Boxtraining (Trainer: Sergej)
+  - 11:30 - 13:00: fortgeschritten (Trainer: Eike)
+  - 13:30 - 15:00: Anfänger (Trainer: Sebastian)
+  - 15:00 - 16:30: Boxtraining (Trainer: Sebastian)
 
 Für weitere Informationen besuche bitte unsere Website: https://www.kurze-rippe.de/
 
